@@ -1,2 +1,14 @@
 # Sets
-Our sets implementation
+## Our sets implementation
+
+## Authors
+
+* Krzysztof Chruściel
+* Marcin Słota
+* Radosław Bednarczyk
+
+## Technology
+
+* Java
+* Maven
+* JUnit
