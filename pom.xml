@@ -7,6 +7,7 @@
     <groupId>pl.edu.us.awpto</groupId>
     <artifactId>Sets</artifactId>
     <version>0.1.0</version>
+    <packaging>jar</packaging>
 
 
     <name>Sets</name>
