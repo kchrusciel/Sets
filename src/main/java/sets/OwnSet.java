@@ -3,7 +3,16 @@ package sets;
 import java.util.*;
 
 /**
- * Created by Krzysztof Chruściel.
+ * <h1>Sets</h1>
+ * The Sets program implements an application that
+ * does operations on sets and Prints
+ * the output on the screen.
+ *
+ * @author Krzysztof Chrusciel
+ * @author Marcin Slota
+ * @author Radoslaw Bednarczyk
+ * @version 0.1.0
+ * @since 2016-06-05
  */
 public class OwnSet<E> implements Set<E> {
 
@@ -13,13 +22,13 @@ public class OwnSet<E> implements Set<E> {
     }
 
     public OwnSet(E... elements) {
-    	if(elements!=null){
-	        for (E element : elements) {
-	            checkUnique(element);
-	            list.add((Integer) element);
-	
-	        }
-    	}
+        if (elements != null) {
+            for (E element : elements) {
+                checkUnique(element);
+                list.add((Integer) element);
+
+            }
+        }
     }
 
     private void checkUnique(E element) {
@@ -28,6 +37,12 @@ public class OwnSet<E> implements Set<E> {
         }
     }
 
+    /**
+     * This method is used to make an union of sets.
+     *
+     * @param setToCheck This is the first parameter to unionOfSets method
+     * @return Set: This returns union of Sets
+     */
     public OwnSet unionOfSets(OwnSet setToCheck) {
         OwnSet<Integer> unionSet = new OwnSet<Integer>();
         unionSet.addAll(setToCheck.getList());
@@ -59,6 +74,12 @@ public class OwnSet<E> implements Set<E> {
         return symmetricDifference;
     }
 
+    /**
+     * This method is used to make an intersections of sets.
+     *
+     * @param setToCheck This is the first parameter to intersectionOfSets method
+     * @return Set: This returns intersection of Set
+     */
     public OwnSet intersectionOfSets(OwnSet setToCheck) {
         OwnSet<Integer> intersection = new OwnSet<Integer>();
         for (Integer element : list) {
@@ -68,10 +89,8 @@ public class OwnSet<E> implements Set<E> {
         }
 
         for (Object element : setToCheck) {
-            if (list.contains(element)) {
-                if (!intersection.contains(element)) {
-                    intersection.add((Integer) element);
-                }
+            if (list.contains(element) && !intersection.contains(element)) {
+                intersection.add((Integer) element);
             }
         }
         return intersection;
