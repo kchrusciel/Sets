@@ -12,3 +12,4 @@
 * Java
 * Maven
 * JUnit
+* AssertJ
