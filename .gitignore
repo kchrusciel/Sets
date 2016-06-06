@@ -1,4 +1,5 @@
 .idea
+.checkstyle
 Sets.iml
 .project
 .classpath

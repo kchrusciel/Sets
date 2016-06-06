@@ -35,14 +35,15 @@ public class OwnSet<E> implements Set<E> {
      * This method is used to check unique elements.
      *
      * @param element This is the first parameter to checkUnique method
-     * @return Nothing.
+     * @return True when is unique else throw exception.
      * @exception IllegalArgumentException when element exists in list.
      * @see IllegalArgumentException
      */
-    private void checkUnique(E element) {
+    public boolean checkUnique(E element) {
         if (list.contains(element)) {
             throw new IllegalArgumentException("Only unique elements!");
         }
+        return true;
     }
 
     /**

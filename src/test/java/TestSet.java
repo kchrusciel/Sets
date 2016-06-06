@@ -1,51 +1,267 @@
-import static org.junit.Assert.*;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
+import org.junit.Before;
 import org.junit.Test;
-
+import org.junit.runner.RunWith;
 import sets.OwnSet;
 
+import java.util.*;
+
+import static com.googlecode.catchexception.apis.BDDCatchException.caughtException;
+import static com.googlecode.catchexception.apis.BDDCatchException.when;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.BDDAssertions.then;
+import static org.junit.Assert.*;
+
+@RunWith(JUnitParamsRunner.class)
 public class TestSet {
-    // getList
 
-    @Test
-    public void getListNotNull() {
-        OwnSet<Integer> set = new OwnSet<Integer>(null);
-        assertNotNull(set.getList());
+    private OwnSet<Integer> set;
+
+    @Before
+    public void setUp() throws Exception {
+        set = new OwnSet<>(10, 20, 30);
     }
 
     @Test
-    public void getListNotNull2() {
-        OwnSet<Integer> set = new OwnSet<Integer>();
-        assertNotNull(set.getList());
+    @Parameters({"3"})
+    public void shouldReturnSize(int expectedSize) {
+        //When
+        int size = set.size();
+        //Then
+        assertThat(size).isEqualTo(expectedSize);
     }
 
     @Test
-    public void getListSize() {
-        OwnSet<Integer> set = new OwnSet<Integer>(10, 20, 30);
-        assertEquals(set.size(), set.getList().size());
-
+    public void shouldThrowExceptionWhenAddNonUniqueElement() throws Exception {
+        //When
+        when(set).add(10);
+        // Then
+        then(caughtException())
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Only unique elements!")
+                .hasNoCause();
     }
 
-
-    //unionOfSet
     @Test
-    public void uniqueUnionOfSet() {
-        OwnSet<Integer> set = new OwnSet(10, 20, 30);
+    @Parameters({
+            "40",
+            "50"})
+    public void shouldReturnTrueWhenCheckElementIsUnique(int elementToCheck) throws Exception {
+        //Given
+        OwnSet<Integer> set = new OwnSet<>(10, 20, 30);
+        //When
+        boolean result = set.checkUnique(elementToCheck);
+        // Then
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    public void shouldReturnNotNullWhenGetList() {
+        //Given
+        set = new OwnSet<>();
+        //When
+        List<Integer> list = set.getList();
+        //Then
+        assertNotNull(list);
+    }
+
+    @Test
+    @Parameters({
+            "80",
+            "90"})
+    public void shouldReturnTrueWhenAddUniqueElement(int elementToCheck) throws Exception {
+        //Given
+        OwnSet<Integer> set = new OwnSet<>(10, 20, 30);
+        //When
+        boolean result = set.add(elementToCheck);
+        // Then
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    public void shouldReturnUnionOfSets() {
+        //Given
         OwnSet<Integer> setToUnion = new OwnSet(10, 20, 30, 40);
-
+        //When
         OwnSet<Integer> result = set.unionOfSets(setToUnion);
+        List<Integer> expectedResult = setToUnion.getList();
+        //Then
+        assertThat(result).containsAll(expectedResult);
+    }
 
-        assertTrue(isUnique(result));
+    @Test
+    @Parameters({"7"})
+    public void shouldChangeSizeAfterUnion(int expectedSize) {
+        //Given
+        OwnSet<Integer> target = new OwnSet(40, 50, 60, 70);
+        //When
+        OwnSet<Integer> result = set.unionOfSets(target);
+        int size = result.getList().size();
+        //Then
+        assertThat(size).isEqualTo(expectedSize);
+    }
+
+    @Test
+    public void shouldReturnIntersectionOfSets() {
+        //Given
+        OwnSet<Integer> setToUnion = new OwnSet(10, 20, 30, 40);
+        //When
+        OwnSet<Integer> result = set.intersectionOfSets(setToUnion);
+        List<Integer> expectedResult = set.getList();
+        //Then
+        assertThat(result).containsAll(expectedResult);
+    }
+
+    @Test
+    public void shouldReturnZeroSizeAfterDifference() {
+        //Given
+        OwnSet<Integer> setToUnion = new OwnSet(10, 20, 30, 40);
+        //When
+        OwnSet<Integer> result = set.differenceOfSets(setToUnion);
+        int size = result.size();
+        //Then
+        assertThat(size).isEqualTo(0);
+    }
+
+    @Test
+    @Parameters({"1"})
+    public void shouldReturnExpectedSizeAfterDifference(int expectedResult) {
+        //Given
+        set = new OwnSet<>(10, 20, 30, 50);
+        OwnSet<Integer> target = new OwnSet<>(10, 20, 30, 40);
+        //When
+        OwnSet<Integer> result = set.differenceOfSets(target);
+        int size = result.size();
+        //Then
+        assertThat(size).isEqualTo(expectedResult);
+    }
+
+    @Test
+    public void shouldReturnNotNullAfterClear() {
+        //When
+        set.clear();
+        //Then
+        assertThat(set).isNotNull();
+    }
+
+    @Test
+    public void shouldReturnZeroSizeAfterClear() {
+        //When
+        set.clear();
+        int size = set.size();
+        //Then
+        assertThat(size).isEqualTo(0);
+    }
+
+    @Test
+    public void shouldReturnFalseWhenCheckIsEmpty() {
+        //When
+        boolean result = set.isEmpty();
+        //Then
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    public void shouldReturnTrueWhenCheckIsEmpty() {
+        //Given
+        OwnSet<Integer> setToCheck = new OwnSet<>();
+        //When
+        boolean result = setToCheck.isEmpty();
+        //Then
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    public void shouldReturnChangedSizeAfterAdd() {
+        //Given
+        int sizeBeforeAdd = set.size();
+        //When
+        set.add(50);
+        int sizeAfterAdd = set.size();
+        //Then
+        assertThat(sizeAfterAdd).isEqualTo(sizeBeforeAdd + 1);
+    }
+
+    @Test
+    public void shouldChangeSizeAfterRemoveExistingElement() throws Exception {
+        //Given
+        int sizeBeforeRemove = set.size();
+        //When
+        set.remove(10);
+        int sizeAfterRemove = set.size();
+        //Then
+        assertThat(sizeAfterRemove).isEqualTo(sizeBeforeRemove - 1);
+    }
+
+    @Test
+    public void shouldNotChangeSizeAfterRemoveNonExistingElement() throws Exception {
+        //Given
+        int sizeBeforeRemove = set.size();
+        //When
+        set.remove(100);
+        int sizeAfterRemove = set.size();
+        //Then
+        assertThat(sizeAfterRemove).isEqualTo(sizeBeforeRemove);
+    }
+
+    @Test
+    @Parameters({
+            "10, true",
+            "50, false"})
+    public void shouldReturnBooleanValue(int valueToCheck, boolean expectedValue) throws Exception {
+        //When
+        boolean result = set.contains(valueToCheck);
+        //Then
+        assertThat(result).isEqualTo(expectedValue);
+    }
+
+    @Test
+    public void shouldReturnTrueAfterContainsAllCheck() throws Exception {
+        //Given
+        List<Integer> listToCheck = new ArrayList<>(Arrays.asList(20, 30));
+        //When
+        boolean result = set.containsAll(listToCheck);
+        //Then
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    public void shouldReturnFalseAfterContainsAllCheck() throws Exception {
+        //Given
+        List<Integer> listToCheck = new ArrayList<>(Arrays.asList(20, 30, 50, 10000));
+        //When
+        boolean result = set.containsAll(listToCheck);
+        //Then
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    public void shouldReturnSymmetricDifferenceOfSets() throws Exception {
+        //When
+        OwnSet<Integer> setToUnion = new OwnSet(10, 20, 30, 40);
+        //Then
+        OwnSet<Integer> result = set.symmetricDifferenceOfSets(setToUnion);
+        List<Integer> expectedResult = new ArrayList<>(Arrays.asList(40));
+        //Then
+        assertThat(result).containsAll(expectedResult);
+    }
+
+    @Test
+    @Parameters({"1"})
+    public void shouldChangeSizeAfterSymmetricDifferenceOfSets(int expectedValue) throws Exception {
+        //When
+        OwnSet<Integer> setToUnion = new OwnSet(10, 20, 30, 40);
+        //Then
+        OwnSet<Integer> differenceOfSets = set.symmetricDifferenceOfSets(setToUnion);
+        int result = differenceOfSets.size();
+        //Then
+        assertThat(result).isEqualTo(1);
     }
 
     private boolean isUnique(OwnSet param) {
         List<Integer> list = param.getList();
-        Set<Integer> set = new HashSet<Integer>(list);
+        Set<Integer> set = new HashSet<>(list);
 
         if (set.size() < list.size()) {
             return false;
@@ -53,60 +269,16 @@ public class TestSet {
         return true;
     }
 
-
-    @Test
-    public void containSourceElementUnionOfSet() {
-
-        OwnSet<Integer> set = new OwnSet(10, 20, 30);
-        OwnSet<Integer> setToUnion = new OwnSet(40, 50, 60, 70);
-
-        OwnSet<Integer> result = set.unionOfSets(setToUnion);
-
-        for (int i : set.getList()) {
-            if (!result.contains(i)) {
-                assertFalse(true);
-            }
-        }
-
-        assertTrue(true);
-    }
-
-    @Test
-    public void sizeUnionOfSet() {
-
-        OwnSet<Integer> source = new OwnSet(10, 20, 30);
-        OwnSet<Integer> target = new OwnSet(40, 50, 60, 70);
-
-        OwnSet<Integer> result = source.unionOfSets(target);
-
-        if (result.size() > (source.size() + target.size())) {
-            assertFalse(true);
-        }
-        assertTrue(true);
-    }
-
-
-    // intersectionOfSets
-
-    @Test
-    public void intersectionOfSetsUnique() {
-        OwnSet<Integer> set = new OwnSet(10, 20, 30);
-        OwnSet<Integer> setToUnion = new OwnSet(10, 20, 30, 40);
-
-        OwnSet<Integer> result = set.intersectionOfSets(setToUnion);
-
-        assertTrue(isUnique(result));
-    }
-
     @Test
     public void compareOperationintersectionOfSets() {
-        OwnSet<Integer> source = new OwnSet<Integer>(10, 20, 30);
-        OwnSet<Integer> target = new OwnSet<Integer>(10);
+        //Given
+        OwnSet<Integer> target = new OwnSet<>(10);
 
-        OwnSet<Integer> result = source.intersectionOfSets(target);
-        OwnSet<Integer> resultD = source.differenceOfSets(target);
+        OwnSet<Integer> resultOfIntersection = set.intersectionOfSets(target);
+        OwnSet<Integer> resultOfDifference = set.differenceOfSets(target);
 
-        assertEquals(source.size(), (result.size() + resultD.size()));
+
+        assertEquals(set.size(), (resultOfIntersection.size() + resultOfDifference.size()));
 
     }
 
@@ -142,7 +314,6 @@ public class TestSet {
         assertTrue(true);
     }
 
-
     @Test
     public void excludedElementsSourceIntersectionOfSets() {
         OwnSet<Integer> source = new OwnSet<Integer>(10, 20, 30, 50, 60);
@@ -167,32 +338,6 @@ public class TestSet {
         assertTrue(true);
     }
 
-    //differenceOfSets
-
-    @Test
-    public void differenceOfSetsUnique() {
-        OwnSet<Integer> set = new OwnSet(10, 20, 30);
-        OwnSet<Integer> setToUnion = new OwnSet(10, 20, 30, 40);
-
-        OwnSet<Integer> result = set.differenceOfSets(setToUnion);
-
-        assertTrue(isUnique(result));
-    }
-
-    @Test
-    public void sizeDifferenceOfSets() {
-        OwnSet<Integer> source = new OwnSet<Integer>(10, 20, 30, 50);
-        OwnSet<Integer> target = new OwnSet<Integer>(10, 20, 30, 40);
-
-        OwnSet<Integer> result = source.differenceOfSets(target);
-
-        if (result.size() > source.size()) {
-            assertFalse(true);
-        }
-        assertTrue(true);
-
-    }
-
     @Test
     public void excludedDifferenceOfSets() {
         OwnSet<Integer> source = new OwnSet<Integer>(10, 20, 30, 50);
@@ -210,7 +355,6 @@ public class TestSet {
 
     }
 
-
     @Test
     public void existDifferenceOfSets() {
         OwnSet<Integer> source = new OwnSet<Integer>(10, 20, 30, 50);
@@ -227,40 +371,10 @@ public class TestSet {
         assertTrue(true);
     }
 
-
-    //symmetricDifferenceOfSets
-    @Test
-    public void symmetricDifferenceOfSetsUnique() {
-        OwnSet<Integer> set = new OwnSet(10, 20, 30);
-        OwnSet<Integer> setToUnion = new OwnSet(10, 20, 30, 40);
-
-        OwnSet<Integer> result = set.symmetricDifferenceOfSets(setToUnion);
-
-        assertTrue(isUnique(result));
-    }
-
-
-    @Test
-    public void sizeSymmetricDifferenceOfSets() {
-        OwnSet<Integer> source = new OwnSet<Integer>(10, 20, 30, 50);
-        OwnSet<Integer> target = new OwnSet<Integer>(70, 90);
-
-        OwnSet<Integer> result = source.symmetricDifferenceOfSets(target);
-
-        int smallest = source.size() > target.size() ? target.size() : source.size();
-
-        if (result.size() > (source.size() + target.size())) {
-            assertFalse(true);
-        }
-
-        assertTrue(true);
-
-    }
-
     @Test
     public void compareOperationSymmetricDifferenceOfSets() {
-        OwnSet<Integer> source = new OwnSet<Integer>(20, 30, 50);
-        OwnSet<Integer> target = new OwnSet<Integer>(10, 70, 90);
+        OwnSet<Integer> source = new OwnSet<>(20, 30, 50);
+        OwnSet<Integer> target = new OwnSet<>(10, 70, 90);
 
         OwnSet<Integer> resultU = source.unionOfSets(target);
         OwnSet<Integer> resultI = source.intersectionOfSets(target);
@@ -270,70 +384,6 @@ public class TestSet {
             assertTrue(true);
         }
         assertFalse(false);
-    }
-
-    // size
-    @Test
-    public void size() {
-        OwnSet<Integer> result = new OwnSet<Integer>(20, 30, 50);
-
-        int counter = 0;
-        for (Integer integer : result) {
-            counter++;
-        }
-
-        assertEquals(counter, result.size());
-    }
-
-    //clear
-
-    @Test
-    public void clearNotNull() {
-        OwnSet<Integer> result = new OwnSet<Integer>(20, 30, 50);
-        result.clear();
-        assertNotNull(result);
-    }
-
-
-    @Test
-    public void clearSize() {
-        OwnSet<Integer> result = new OwnSet<Integer>(20, 30, 50);
-        result.clear();
-        assertEquals(result.size(), 0);
-
-    }
-
-    // isEmpty
-
-    @Test
-    public void isEmptySize() {
-        OwnSet<Integer> result = new OwnSet<Integer>(20, 30, 50);
-        assertEquals(result.isEmpty(), result.size() == 0);
-    }
-
-    // add
-    @Test
-    public void addUnique() {
-        OwnSet<Integer> result = new OwnSet<Integer>(20, 30, 50);
-        result.add(40);
-        assertTrue(isUnique(result));
-    }
-
-    @Test
-    public void addSize() {
-        int element = 12;
-
-        OwnSet<Integer> result = new OwnSet<Integer>(element);
-        OwnSet<Integer> temp = new OwnSet<Integer>(element);
-        int param = 25; //12
-        try {
-            temp.add(param);
-        } catch (Exception e) {
-            assertTrue("Zdublowanie elementu", true);
-            return;
-        }
-
-        assertTrue((result.size() + 1) == temp.size());
     }
 
 }
