@@ -7,10 +7,7 @@ import sets.OwnSet;
 
 import java.util.*;
 
-import static com.googlecode.catchexception.apis.BDDCatchException.caughtException;
-import static com.googlecode.catchexception.apis.BDDCatchException.when;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.BDDAssertions.then;
 import static org.junit.Assert.*;
 
 @RunWith(JUnitParamsRunner.class)
@@ -32,15 +29,10 @@ public class TestSet {
         assertThat(size).isEqualTo(expectedSize);
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void shouldThrowExceptionWhenAddNonUniqueElement() throws Exception {
         //When
-        when(set).add(10);
-        // Then
-        then(caughtException())
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Only unique elements!")
-                .hasNoCause();
+        set.add(10);
     }
 
     @Test

@@ -1,13 +1,19 @@
 package sets;
 
-import java.util.*;
+
+import java.util.Set;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Collection;
 
 /**
  * <h1>Sets</h1>
- * The Sets program implements an application that
+ * Our set implementation
+ * <p>The Sets program implements an application that
  * does operations on sets and Prints
- * the output on the screen.
- *
+ * the output on the screen.</p>
+ * @param <E> This is type o class
  * @author Krzysztof Chrusciel
  * @author Marcin Slota
  * @author Radoslaw Bednarczyk
@@ -16,12 +22,22 @@ import java.util.*;
  */
 public class OwnSet<E> implements Set<E> {
 
-    List<Integer> list = new ArrayList<Integer>();
+    /**
+     * List for elements.
+     */
+    private List<Integer> list = new ArrayList<>();
 
+    /**
+     * Empty constructor.
+     */
     public OwnSet() {
     }
 
-    public OwnSet(E... elements) {
+    /**
+     * Creates list with elements.
+     * @param elements This is a parameter with elements
+     */
+    public OwnSet(final E... elements) {
         if (elements != null) {
             for (E element : elements) {
                 checkUnique(element);
@@ -39,7 +55,7 @@ public class OwnSet<E> implements Set<E> {
      * @exception IllegalArgumentException when element exists in list.
      * @see IllegalArgumentException
      */
-    public boolean checkUnique(E element) {
+    public final boolean checkUnique(final E element) {
         if (list.contains(element)) {
             throw new IllegalArgumentException("Only unique elements!");
         }
@@ -52,8 +68,8 @@ public class OwnSet<E> implements Set<E> {
      * @param setToCheck This is the first parameter to unionOfSets method
      * @return Set: This returns union of Sets
      */
-    public OwnSet unionOfSets(OwnSet setToCheck) {
-        OwnSet<Integer> unionSet = new OwnSet<Integer>();
+    public final OwnSet unionOfSets(final OwnSet setToCheck) {
+        final OwnSet<Integer> unionSet = new OwnSet<Integer>();
         unionSet.addAll(setToCheck.getList());
         for (Integer element : list) {
             if (!setToCheck.contains(element)) {
@@ -70,8 +86,8 @@ public class OwnSet<E> implements Set<E> {
      * @param setToCheck This is the first parameter to checkUnique method
      * @return OwnSet: This returns symmetricDifference
      */
-    public OwnSet symmetricDifferenceOfSets(OwnSet setToCheck) {
-        OwnSet<Integer> symmetricDifference = new OwnSet<Integer>();
+    public final OwnSet symmetricDifferenceOfSets(final OwnSet setToCheck) {
+        final OwnSet<Integer> symmetricDifference = new OwnSet<Integer>();
 
         for (Integer element : list) {
             if (!setToCheck.contains(element)) {
@@ -92,11 +108,12 @@ public class OwnSet<E> implements Set<E> {
     /**
      * This method is used to make an intersections of sets.
      *
-     * @param setToCheck This is the first parameter to intersectionOfSets method
+     * @param setToCheck This is the first parameter
+     *                   to intersectionOfSets method
      * @return Set: This returns intersection of Sets.
      */
-    public OwnSet intersectionOfSets(OwnSet setToCheck) {
-        OwnSet<Integer> intersection = new OwnSet<Integer>();
+    public final OwnSet intersectionOfSets(final OwnSet setToCheck) {
+        final OwnSet<Integer> intersection = new OwnSet<Integer>();
         for (Integer element : list) {
             if (setToCheck.contains(element)) {
                 intersection.add(element);
@@ -117,8 +134,8 @@ public class OwnSet<E> implements Set<E> {
      * @param setToCheck This is the first parameter to differenceOfSets method
      * @return OwnSet: This returns difference.
      */
-    public OwnSet differenceOfSets(OwnSet setToCheck) {
-        OwnSet<Integer> difference = new OwnSet<Integer>();
+    public final OwnSet differenceOfSets(final OwnSet setToCheck) {
+        final OwnSet<Integer> difference = new OwnSet<Integer>();
         for (Integer element : list) {
             if (!setToCheck.contains(element)) {
                 difference.add(element);
@@ -131,10 +148,18 @@ public class OwnSet<E> implements Set<E> {
     /**
      * This method is used to get List.
      *
-     * @return List<Integer>: This returns list.
+     * @return List: This returns list.
      */
-    public List<Integer> getList() {
+    public final List<Integer> getList() {
         return list;
+    }
+
+    /**
+     * This method is used to set List.
+     * @param listToSet This is the parameter for set list
+     */
+    public final void setList(final List<Integer> listToSet) {
+        this.list = listToSet;
     }
 
     /**
@@ -142,7 +167,7 @@ public class OwnSet<E> implements Set<E> {
      *
      * @return int: This returns size of list.
      */
-    public int size() {
+    public final int size() {
         return list.size();
     }
 
@@ -151,7 +176,7 @@ public class OwnSet<E> implements Set<E> {
      *
      * @return boolean: This returns true if list is empty.
      */
-    public boolean isEmpty() {
+    public final boolean isEmpty() {
         return list.isEmpty();
     }
 
@@ -161,16 +186,16 @@ public class OwnSet<E> implements Set<E> {
      * @param o This is the first parameter to contains method
      * @return boolean: This returns true if list contains object o.
      */
-    public boolean contains(Object o) {
+    public final boolean contains(final Object o) {
         return list.contains((Integer) o);
     }
 
     /**
      * This method is used to iterate through list objects.
      *
-     * @return Iterator<E>: This returns list objects.
+     * @return Iterator: This returns list objects.
      */
-    public Iterator<E> iterator() {
+    public final Iterator<E> iterator() {
         return (Iterator<E>) list.iterator();
     }
 
@@ -179,7 +204,7 @@ public class OwnSet<E> implements Set<E> {
      *
      * @return Object[]: This returns list as an Array.
      */
-    public Object[] toArray() {
+    public final Object[] toArray() {
         return list.toArray();
     }
 
@@ -187,9 +212,10 @@ public class OwnSet<E> implements Set<E> {
      * This method is used to store object a in Array.
      *
      * @param a This is the first parameter to toArray method
-     * @return <T> T[]: This returns object a as an Array object.
+     * @param <T> This is the type parameter
+     * @return T[]: This returns object a as an Array object.
      */
-    public <T> T[] toArray(T[] a) {
+    public final <T> T[] toArray(final T[] a) {
         return list.toArray(a);
     }
 
@@ -199,7 +225,7 @@ public class OwnSet<E> implements Set<E> {
      * @param e This is the first parameter to add method
      * @return boolean: This adds object e to list.
      */
-    public boolean add(E e) {
+    public final boolean add(final E e) {
         checkUnique(e);
         return list.add((Integer) e);
     }
@@ -210,7 +236,7 @@ public class OwnSet<E> implements Set<E> {
      * @param o This is the first parameter to remove method
      * @return boolean: This removes object o from list.
      */
-    public boolean remove(Object o) {
+    public final boolean remove(final Object o) {
         return list.remove((Integer) o);
     }
 
@@ -220,7 +246,7 @@ public class OwnSet<E> implements Set<E> {
      * @param c This is the first parameter to containsAll method
      * @return boolean: This returns object c from list.
      */
-    public boolean containsAll(Collection<?> c) {
+    public final boolean containsAll(final Collection<?> c) {
         return list.containsAll(c);
     }
 
@@ -230,7 +256,7 @@ public class OwnSet<E> implements Set<E> {
      * @param c This is the first parameter to addAll method
      * @return boolean: This adds collection to list.
      */
-    public boolean addAll(Collection<? extends E> c) {
+    public final boolean addAll(final Collection<? extends E> c) {
         return list.addAll((Collection<? extends Integer>) c);
     }
 
@@ -240,7 +266,7 @@ public class OwnSet<E> implements Set<E> {
      * @param c This is the first parameter to retainAll method
      * @return boolean: This retains collection in list.
      */
-    public boolean retainAll(Collection<?> c) {
+    public final boolean retainAll(final Collection<?> c) {
         return list.retainAll(c);
     }
 
@@ -250,23 +276,20 @@ public class OwnSet<E> implements Set<E> {
      * @param c This is the first parameter to removeAll method
      * @return boolean: This removes collection from list.
      */
-    public boolean removeAll(Collection<?> c) {
+    public final boolean removeAll(final Collection<?> c) {
         return list.removeAll(c);
     }
 
     /**
      * This method is used to clear list.
      *
-     * @return Nothing.
      */
-    public void clear() {
+    public final void clear() {
         list = new ArrayList<Integer>();
     }
 
     @Override
-    public String toString() {
-        return "OwnSet{" +
-                "list=" + list +
-                '}';
+    public final String toString() {
+        return "OwnSet{" + "list=" + list + '}';
     }
 }
